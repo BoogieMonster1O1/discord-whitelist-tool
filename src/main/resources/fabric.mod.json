@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "discord-whitelist-tool",
   "version": "${version}",
 
-  "name": "Example Mod",
+  "name": "Discord Whitelist Tool",
   "description": "This is an example description! Tell everyone what your mod is about!",
   "authors": [
     "Me!"
@@ -13,17 +13,17 @@
     "sources": "https://github.com/FabricMC/fabric-example-mod"
   },
 
-  "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
+  "license": "Apache-2.0",
+  "icon": "assets/discord-whitelist-tool/icon.png",
 
-  "environment": "*",
+  "environment": "server",
   "entrypoints": {
-    "main": [
-      "net.fabricmc.example.ExampleMod"
+    "server": [
+      "io.github.boogiemonster1o1.discordwhitelisttool.DiscordWhitelistTool"
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "discord-whitelist-tool.mixins.json"
   ],
 
   "depends": {
@@ -33,6 +33,6 @@
     "java": ">=17"
   },
   "suggests": {
-    "another-mod": "*"
+    "flamingo": "*"
   }
 }

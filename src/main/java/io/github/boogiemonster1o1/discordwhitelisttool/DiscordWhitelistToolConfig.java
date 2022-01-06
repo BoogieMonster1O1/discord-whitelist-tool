@@ -15,8 +15,9 @@ public class DiscordWhitelistToolConfig implements ConfigData {
 	@Comment("The role ID of the role to use for whitelist")
 	public String roleId = "";
 
-	@Override
-	public void validatePostLoad() throws ValidationException {
+	@Comment("The application's client ID")
+	public String clientId = "";
 
-	}
+	@Comment("The application's client secret")
+	public String clientSecret = "";
 }

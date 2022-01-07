@@ -17,16 +17,24 @@ public class DiscordWhitelistCommand {
 						.then(
 								literal("enable")
 										.executes(ctx -> {
+											boolean prev = DiscordWhitelistTool.CONFIG.getConfig().enabled;
 											DiscordWhitelistTool.CONFIG.getConfig().enabled = true;
 											ctx.getSource().sendFeedback(new LiteralText("Discord whitelist is now enabled."), true);
+											if (!prev) {
+												DiscordWhitelistTool.refreshBot();
+											}
 											return Command.SINGLE_SUCCESS;
 										})
 						)
 						.then(
 								literal("disable")
 										.executes(ctx -> {
+											boolean prev = DiscordWhitelistTool.CONFIG.getConfig().enabled;
 											DiscordWhitelistTool.CONFIG.getConfig().enabled = false;
 											ctx.getSource().sendFeedback(new LiteralText("Discord whitelist is now disabled."), false);
+											if (prev) {
+												DiscordWhitelistTool.destroyBot();
+											}
 											return Command.SINGLE_SUCCESS;
 										})
 						)

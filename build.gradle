@@ -17,6 +17,12 @@ repositories {
 			includeGroup("me.shedaniel.cloth")
 		}
 	}
+	maven {
+		url 'https://jitpack.io'
+		content {
+			includeGroup("com.github.Mokulu")
+		}
+	}
 }
 
 dependencies {
@@ -28,6 +34,9 @@ dependencies {
 	modApi include("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
+
+	implementation 'com.github.Mokulu:discord-oauth2-api:1.0.2'
+	implementation "com.discord4j:discord4j-core:3.2.1"
 }
 
 processResources {

@@ -1,4 +1,4 @@
-package io.github.boogiemonster1o1.discordwhitelisttool;
+package io.github.boogiemonster1o1.discordwhitelisttool.config;
 
 import blue.endless.jankson.Comment;
 import me.shedaniel.autoconfig.ConfigData;
@@ -20,4 +20,10 @@ public class DiscordWhitelistToolConfig implements ConfigData {
 
 	@Comment("The application's client secret")
 	public String clientSecret = "";
+
+	@Comment("The application's redirect URI")
+	public String redirectUri = "";
+
+	@Comment("The application's bot token")
+	public String botToken = "";
 }

@@ -8,8 +8,9 @@ import java.nio.file.Path;
 import discord4j.core.DiscordClient;
 import discord4j.core.GatewayDiscordClient;
 import io.github.boogiemonster1o1.discordwhitelisttool.commands.DiscordWhitelistCommand;
-import io.github.boogiemonster1o1.discordwhitelisttool.config.DiscordWhitelistToolConfig;
-import io.github.boogiemonster1o1.discordwhitelisttool.config.UserList;
+import io.github.boogiemonster1o1.discordwhitelisttool.io.DiscordWhitelistToolConfig;
+import io.github.boogiemonster1o1.discordwhitelisttool.io.UserList;
+import io.github.boogiemonster1o1.discordwhitelisttool.server.RedirectServer;
 import io.mokulu.discord.oauth.DiscordOAuth;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
@@ -39,16 +40,10 @@ public class DiscordWhitelistTool implements DedicatedServerModInitializer {
 
 	public static void refreshBot() {
 		destroyBot();
-		DiscordClient client = DiscordClient.create(CONFIG.get().botToken);
-		client.login().subscribe(g -> BOT = g);
-		OAUTH = new DiscordOAuth(CONFIG.get().clientId, CONFIG.get().clientSecret, CONFIG.get().redirectUri, new String[]{"identify"});
+		OAUTH = new DiscordOAuth(CONFIG.get().clientId, CONFIG.get().clientSecret, CONFIG.get().redirectUri, new String[]{"identify", "guilds.members.read"});
 	}
 
 	public static void destroyBot() {
-		if (BOT != null) {
-			BOT.logout().subscribe();
-		}
-		BOT = null;
 	}
 
 	@Override
@@ -66,12 +61,14 @@ public class DiscordWhitelistTool implements DedicatedServerModInitializer {
 				throw new UncheckedIOException(e);
 			}
 		}
-		USER_LIST.load(WHITELIST_DATA_PATH.resolve("states.dat"), WHITELIST_DATA_PATH.resolve("users.dat"));
+		USER_LIST.load(WHITELIST_DATA_PATH.resolve("states.dat"), WHITELIST_DATA_PATH.resolve("users.dat"), WHITELIST_DATA_PATH.resolve("tokens.dat"));
 		if (CONFIG.get().enabled) {
 			refreshBot();
 		}
+		RedirectServer.init(CONFIG.get().host, CONFIG.get().port, false);
 		ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
-			USER_LIST.save(WHITELIST_DATA_PATH.resolve("states.dat"), WHITELIST_DATA_PATH.resolve("users.dat"));
+			USER_LIST.save(WHITELIST_DATA_PATH.resolve("states.dat"), WHITELIST_DATA_PATH.resolve("users.dat"), WHITELIST_DATA_PATH.resolve("tokens.dat"));
+			RedirectServer.SERVER.dispose();
 		});
 	}
 

@@ -1,4 +1,4 @@
-package io.github.boogiemonster1o1.discordwhitelisttool.config;
+package io.github.boogiemonster1o1.discordwhitelisttool.io;
 
 import blue.endless.jankson.Comment;
 import me.shedaniel.autoconfig.ConfigData;
@@ -24,6 +24,9 @@ public class DiscordWhitelistToolConfig implements ConfigData {
 	@Comment("The application's redirect URI")
 	public String redirectUri = "";
 
-	@Comment("The application's bot token")
-	public String botToken = "";
+	@Comment("The application's port")
+	public int port = 1149;
+
+	@Comment("The application's host (the server ip or domain name)")
+	public String host = "";
 }

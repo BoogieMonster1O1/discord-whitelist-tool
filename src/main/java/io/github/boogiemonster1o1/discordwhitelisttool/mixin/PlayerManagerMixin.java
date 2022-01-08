@@ -23,7 +23,7 @@ public class PlayerManagerMixin {
 			if (state == TriState.FALSE) {
 				cir.setReturnValue(DiscordWhitelistTool.NOT_WHITELISTED_MESSAGE);
 			} else if (state == TriState.DEFAULT) {
-				cir.setReturnValue(DiscordWhitelistTool.NOT_AUTHORIZED_MESSAGE); // TODO: Send oauth link
+				cir.setReturnValue(DiscordWhitelistTool.NOT_AUTHORIZED_MESSAGE.copy().append(DiscordWhitelistTool.USER_LIST.getOauthUrl(profile)));
 			}
 		}
 	}

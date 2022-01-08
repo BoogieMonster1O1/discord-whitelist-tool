@@ -7,7 +7,7 @@ import me.shedaniel.autoconfig.annotation.Config;
 @Config(name = "discord-whitelist-tool")
 public class DiscordWhitelistToolConfig implements ConfigData {
 	@Comment("Whether Discord Whitelist Tool should be enabled")
-	public boolean enabled = true;
+	public boolean enabled = false;
 
 	@Comment("The Guild ID of the Discord server to use for whitelist")
 	public String guildId = "";

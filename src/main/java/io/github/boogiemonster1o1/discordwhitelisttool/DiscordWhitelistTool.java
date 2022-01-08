@@ -5,7 +5,6 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import discord4j.core.DiscordClient;
 import discord4j.core.GatewayDiscordClient;
 import io.github.boogiemonster1o1.discordwhitelisttool.commands.DiscordWhitelistCommand;
 import io.github.boogiemonster1o1.discordwhitelisttool.io.DiscordWhitelistToolConfig;

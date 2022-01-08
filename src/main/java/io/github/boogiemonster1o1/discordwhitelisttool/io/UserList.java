@@ -5,7 +5,6 @@ import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.DrbgParameters;
 import java.security.SecureRandom;
 import java.util.Optional;
 import java.util.UUID;
@@ -50,13 +49,17 @@ public class UserList {
 		this.tokens = HashBiMap.create();
 	}
 
+	public String getState(UuidName uuidName) {
+		return this.states.get(uuidName);
+	}
+
 	@NotNull
 	public TriState isAuthorized(GameProfile profile) {
 		UuidName uuidName = UuidName.from(profile);
 		Snowflake e = this.users.get(uuidName);
 		if (e == null) {
 			byte[] bytes = new byte[28];
-			RANDOM.nextBytes(bytes, DrbgParameters.nextBytes(5, true, uuidName.name.getBytes(StandardCharsets.UTF_8)));
+			RANDOM.nextBytes(bytes);
 			this.states.putIfAbsent(uuidName, new String(Hex.encodeHex(bytes)));
 			return TriState.DEFAULT;
 		}
@@ -85,7 +88,11 @@ public class UserList {
 	}
 
 	public LiteralText getOauthUrl(GameProfile profile) {
-		String url = DiscordWhitelistTool.OAUTH.getAuthorizationURL(this.states.get(UuidName.from(profile)));
+		String url = DiscordWhitelistTool.OAUTH.getAuthorizationURL(this.states.computeIfAbsent(UuidName.from(profile), uuidName -> {
+			byte[] bytes = new byte[28];
+			RANDOM.nextBytes(bytes);
+			return new String(Hex.encodeHex(bytes));
+		}));
 		LiteralText text = new LiteralText(url);
 		text.setStyle(text.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url)));
 		return text;
@@ -148,15 +155,15 @@ public class UserList {
 			throw new UncheckedIOException(e);
 		}
 		try {
-			if (Files.exists(statesPath)) {
-				NbtCompound nbt  = NbtIo.readCompressed(Files.newInputStream(statesPath));
+			if (Files.exists(tokensPath)) {
+				NbtCompound nbt  = NbtIo.readCompressed(Files.newInputStream(tokensPath));
 				nbt.getKeys().forEach(key -> {
 					NbtCompound uuidNameNbt = nbt.getCompound(key);
 					UuidName uuidName = new UuidName(UUID.fromString(uuidNameNbt.getString("uuid")), uuidNameNbt.getString("name"));
 					this.tokens.put(uuidName, key);
 				});
 			} else {
-				Files.createFile(statesPath);
+				Files.createFile(tokensPath);
 			}
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);
@@ -202,7 +209,7 @@ public class UserList {
 		}
 	}
 
-	private static class UuidName {
+	public static class UuidName {
 		private final UUID uuid;
 		private final String name;
 

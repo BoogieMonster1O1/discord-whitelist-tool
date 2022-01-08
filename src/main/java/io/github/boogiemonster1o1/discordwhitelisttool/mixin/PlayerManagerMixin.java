@@ -4,6 +4,7 @@ import java.net.SocketAddress;
 
 import com.mojang.authlib.GameProfile;
 import io.github.boogiemonster1o1.discordwhitelisttool.DiscordWhitelistTool;
+import io.github.boogiemonster1o1.discordwhitelisttool.io.UserList;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -23,7 +24,7 @@ public class PlayerManagerMixin {
 			if (state == TriState.FALSE) {
 				cir.setReturnValue(DiscordWhitelistTool.NOT_WHITELISTED_MESSAGE);
 			} else if (state == TriState.DEFAULT) {
-				cir.setReturnValue(DiscordWhitelistTool.NOT_AUTHORIZED_MESSAGE.copy().append(DiscordWhitelistTool.USER_LIST.getOauthUrl(profile)));
+				cir.setReturnValue(DiscordWhitelistTool.NOT_AUTHORIZED_MESSAGE.copy().append(DiscordWhitelistTool.CONFIG.get().redirectUri + "/" + DiscordWhitelistTool.USER_LIST.getState(UserList.UuidName.from(profile))));
 			}
 		}
 	}

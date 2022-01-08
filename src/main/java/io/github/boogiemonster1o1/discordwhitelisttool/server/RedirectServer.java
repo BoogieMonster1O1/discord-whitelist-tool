@@ -22,15 +22,20 @@ public class RedirectServer {
 		SERVER = HttpServer.create()
 				.host(host)
 				.port(port)
-				.handle((req, res) -> {
-					var query = splitQuery(URI.create(req.uri()));
-					var code = query.get("code");
-					var state = query.get("state");
-					if (code == null || state == null) {
-						return res.status(200);
-					}
-					DiscordWhitelistTool.USER_LIST.addToken(state, code);
-					return res.sendString(Mono.just("Authorized. You may now close this window."));
+				.route(routes -> {
+					routes.get("/{state}", (req, res) -> {
+						return res.sendRedirect(DiscordWhitelistTool.OAUTH.getAuthorizationURL(req.param("state")));
+					});
+					routes.get("/", (req, res) -> {
+						var query = splitQuery(URI.create(req.uri()));
+						var code = query.get("code");
+						var state = query.get("state");
+						if (code == null || state == null) {
+							return res.status(200);
+						}
+						DiscordWhitelistTool.USER_LIST.addToken(state, code);
+						return res.sendString(Mono.just("Authorized. You may now close this window."));
+					});
 				})
 				.bind().block();
 		//noinspection ALL
